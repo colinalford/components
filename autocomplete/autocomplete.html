@@ -8,12 +8,8 @@
 </head>
 <body>
   <style>
-    fieldset[name=text-input].filtered li {
+    fieldset[name=text-input].filtered li:not(.filter-match) {
       display: none;
-    }
-
-    fieldset[name=text-input].filtered li.filter-match {
-      display: block;
     }
 
     fieldset[name=text-input] li.checked {
@@ -21,15 +17,44 @@
     }
   </style>
   <form>
+    <script>
+      const callback = function (event) {
+        if (event.target.checked) {
+          const clone =
+            event.target
+            .parentElement.parentElement
+            .cloneNode(true);
+
+          event.target
+            .parentElement.parentElement.classList.add('checked');
+
+          const cloneInput = clone.querySelector('input');
+          cloneInput.type = 'checkbox';
+          cloneInput.onchange = (e) => {
+            event.target.disabled = false;
+            event.target.checked = false;
+            event.target.parentElement.parentElement.classList.remove('checked');
+            clone.parentElement.removeChild(clone);
+          };
+          const selected = document.querySelector('ul');
+          selected.appendChild(clone);
+          event.target.disabled = true;
+        }
+      }
+    </script>
     <fieldset name="component-state"
       onclick="(function(event){
-        document.querySelector('input[type=text]').focus()
+        //document.querySelector('input[type=text]').focus()
       })(event)">
       <ul></ul>
       <fieldset name="selected-list">
-        <input id="test" type="text"
-        onchange="(function(event){
-        })(event)"/>
+        <input
+          id="test"
+          type="text"
+          onkeydown="onkeydown(event)"/>
+        <label>
+          <input type="button" value="x">
+        </label>
         <script>
           const input = document.getElementById('test');
           input.oninput = function (e) {
@@ -37,11 +62,26 @@
 
             if (e.target.value.length > 0) {
               options.classList.add('filtered');
-              const queryStr = 'input[type=checkbox][value*="' + e.target.value + '"]';
+              // const queryStr = 'input[type=checkbox][value*="' + e.target.value + '"]';
+              const queryStr = 'input[type=checkbox]';
               const matches = options.querySelectorAll(queryStr);
-              matches.forEach(match => match.parentElement.parentElement.classList.add('filter-match'));
+              matches.forEach(
+                match => {
+                  if (match.value.includes(e.target.value)) {
+                    match.parentElement.parentElement.classList.add('filter-match')
+                  } else {
+                    match.parentElement.parentElement.classList.remove('filter-match');
+                  }
+                }
+              );
             } else {
               options.classList.remove('filtered');
+            }
+          }
+
+          const onkeydown = function(event) {
+            if (event.target.key === 'ArrowDown') {
+              console.log(event);
             }
           }
         </script>
@@ -53,53 +93,63 @@
                   name="aclist"
                   value="val3"
                   label="val2"
-                  onchange="(function(event){
-                    if (event.target.checked === true) {
-                      const clone = event.target.parentElement.parentElement.cloneNode(true);
-                      event.target.parentElement.parentElement.classList.add('checked');
-
-                      const cloneInput = clone.querySelector('input');
-                      cloneInput.onchange = (e) => {
-                        event.target.checked = false;
-                        event.target.disabled = false;
-                        clone.parentElement.removeChild(clone);
-                      };
-                      const selected = document.querySelector('ul');
-                      selected.appendChild(clone);
-                      event.target.disabled = true;
-                    } else {
-                      
-                    }
-                  })(event)"/>Val2
+                  onchange="callback(event)"/>Val2
               </label>
             </li>
             <li>
               <label>
                 <input type="checkbox"
                   name="aclist"
-                  value="val3"
+                  value="val4"
                   label="val2"
-                  onchange="(function(event){
-                    if (event.target.checked === true) {
-                      const clone = event.target.parentElement.parentElement.cloneNode(true);
-                      event.target.parentElement.parentElement.classList.add('checked');
-
-                      const cloneInput = clone.querySelector('input');
-                      cloneInput.onchange = (e) => {
-                        event.target.checked = false;
-                        event.target.disabled = false;
-                        clone.parentElement.removeChild(clone);
-                      };
-                      const selected = document.querySelector('ul');
-                      selected.appendChild(clone);
-
-                      event.target.disabled = true;
-                    } else {
-                        
-                    }
-                  })(event)"/>Val2
+                  onchange="callback(event)"/>Val2
               </label>
-            </li>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+            </li>
+            <li>
+              <label>
+                <input type="checkbox"
+                  name="aclist"
+                  value="val5"
+                  label="val2"
+                  onchange="callback(event)"/>Val2
+              </label>
+            </li>
+            <li>
+              <label>
+                <input type="checkbox"
+                  name="aclist"
+                  value="val6"
+                  label="val2"
+                  onchange="callback(event)"/>Val2
+              </label>
+            </li>
+            <li>
+              <label>
+                <input type="checkbox"
+                  name="aclist"
+                  value="val7"
+                  label="val2"
+                  onchange="callback(event)"/>Val2
+              </label>
+            </li>            
+            <li>
+              <label>
+                <input type="checkbox"
+                  name="aclist"
+                  value="val8"
+                  label="val2"
+                  onchange="callback(event)"/>Val2
+              </label>
+            </li>
+            <li>
+              <label>
+                <input type="checkbox"
+                  name="aclist"
+                  value="val9"
+                  label="val2"
+                  onchange="callback(event)"/>Val2
+              </label>
+            </li>
           </ul>
         </fieldset>
       </fieldset>
